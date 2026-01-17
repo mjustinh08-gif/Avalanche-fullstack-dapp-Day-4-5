@@ -1,21 +1,27 @@
-// Ambil URL dari file .env.local yang tadi kita buat
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
+if (!BACKEND_URL) {
+  throw new Error("NEXT_PUBLIC_BACKEND_URL is not defined");
+}
+
 /**
- * Fungsi untuk mengambil nilai terbaru
+ * Ambil nilai terbaru dari backend
  */
 export async function getBlockchainValue() {
   const res = await fetch(`${BACKEND_URL}/blockchain/value`, {
     method: "GET",
-    cache: "no-store", // Agar data selalu fresh dari blockchain
+    cache: "no-store",
   });
 
-  if (!res.ok) return { value: 0 }; // Default jika error
+  if (!res.ok) {
+    throw new Error("Gagal mengambil value dari blockchain");
+  }
+
   return res.json();
 }
 
 /**
- * Fungsi untuk mengambil data event
+ * Ambil data event dari backend
  */
 export async function getBlockchainEvents() {
   const res = await fetch(`${BACKEND_URL}/blockchain/events`, {
@@ -23,6 +29,9 @@ export async function getBlockchainEvents() {
     cache: "no-store",
   });
 
-  if (!res.ok) return []; // Balikan array kosong jika error
+  if (!res.ok) {
+    throw new Error("Gagal mengambil event dari blockchain");
+  }
+
   return res.json();
 }
