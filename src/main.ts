@@ -1,4 +1,3 @@
-import 'dotenv/config'; // Baris pertama ini wajib di atas sendiri
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -6,24 +5,22 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // --- MODIFIKASI IDENTITAS ---
+  // WAJIB: Biar Frontend bisa akses API ini
+  app.enableCors();
+
   const config = new DocumentBuilder()
-    .setTitle('Block Explorer Mini - Muhammad Justin Hendarta - NIM:241011402830') 
-    .setDescription('Backend API untuk berinteraksi dengan Smart Contract SimpleStorage di Avalanche Fuji')
-    .setVersion('2.0') 
-    .addTag('Blockchain Operations')
+    .setTitle('Block Explorer Mini - Justin')
+    .setDescription('Backend API untuk dApp Avalanche')
+    .setVersion('2.0')
+    .addTag('Blockchain')
     .build();
-  // ---------------------------
 
   const document = SwaggerModule.createDocument(app, config);
-  
-  // Setup documentation path
   SwaggerModule.setup('documentation', app, document);
 
-  // Menggunakan port dari .env (opsional) atau default 3000
+  // WAJIB: Biar bisa jalan di Cloud (Railway)
   const port = process.env.PORT || 3000;
-  await app.listen(port);
-  
-  console.log(`🚀 Server berjalan di http://localhost:${port}/documentation`);
+  await app.listen(port, '0.0.0.0'); 
+  console.log(`🚀 Server running on port ${port}`);
 }
 bootstrap();
